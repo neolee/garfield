@@ -1,5 +1,6 @@
 from dialog_system import Garfield
 from bots.builtin import *
+from bots.llm import SimpleLLMBot, LLMBot
 
 
 if __name__ == '__main__':
@@ -8,4 +9,6 @@ if __name__ == '__main__':
     garfield.add(GreetingBot())
     garfield.add(FavoriteColorBot())
     garfield.add(CalcBot('looped'))
+    garfield.add(SimpleLLMBot('looped'))
+    garfield.add(LLMBot())
     garfield.run()

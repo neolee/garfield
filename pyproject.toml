@@ -5,6 +5,9 @@ description = "Simple dialog system framework"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
+    "httpx[socks]",
+    "openai",
+    "rtoml",
     "simpleeval",
     "termcolor",
 ]

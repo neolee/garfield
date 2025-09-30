@@ -1,38 +1,44 @@
-from garfield.bot import Bot
-from api import load_system_message
-from api import simple_chat_completion, chat_completion
-from api import stringify_history
+from bot import Bot
+import models as m
 
-import os
-os.environ["TRANSFORMERS_VERBOSITY"] = "error"
-os.environ["TOKENIZERS_PARALLELISM"] = "true"
+
+system_message = "You are a helpful assistant."
 
 
 class SimpleLLMBot(Bot):
     def __init__(self, runtype='looped'):
         super().__init__(runtype)
         self.q = "I'm now backed by the newest LLM. Let's talk."
-        self.system_message = load_system_message()
+        self.model = m.default
 
     def _think(self, s):
-        completion = simple_chat_completion(s, self.system_message)
-        return completion.choices[0].message.content
+        completion = self.model.create_chat_completion(
+            messages=[
+                {"role": "system", "content": system_message},
+                {"role": "user", "content": s}
+            ]
+        )
+        return self.model.chat_completion_content(completion)
 
+
+def stringify_messages(messages):
+    import json
+    
+    s = f"\n{'-'*20} History dump {'-'*20}\n"
+    s += json.dumps(messages,  ensure_ascii=False, indent=2)
+    s += f"\n{'-'*55}"
+    return s
 
 class LLMBot(Bot):
     def __init__(self, runtype='custom', stream=True, verbose=False):
         super().__init__(runtype)
+        self.q = "I'm now backed by the newest LLM. Let's talk."
+        self.model = m.default
         self.stream = stream
         self.verbose = verbose
-        self.welcome_message = "Introduce yourself to someone opening this program for the first time. Be concise."
-        self.system_message = load_system_message()
-        self.history = [
-            {"role": "system", "content": self.system_message},
-            {"role": "user", "content": self.welcome_message},
-        ]
 
-    def _show_history(self):
-        self._print(stringify_history(self.history), 'light_grey')
+    def _show_messages(self, messages):
+        self._print(stringify_messages(messages), 'light_grey')
 
     # called after completion return from the model
     def _postprocessing(self, content):
@@ -43,28 +49,35 @@ class LLMBot(Bot):
         return q
 
     def run(self):
+        self._print(self.q)
+        
+        messages = [
+            {"role": "system", "content": system_message}
+        ]
+
         while True:
-            new_message = {"role": "assistant", "content": ""}
-            completion = chat_completion(self.stream, self.history)
-            if self.stream:
-                for chunk in completion:
-                    if chunk.choices[0].delta.content:
-                        print(self._format(chunk.choices[0].delta.content), end="", flush=True)
-                        new_message["content"] += chunk.choices[0].delta.content
-                print()
-            else:
-                response = self._postprocessing(completion.choices[0].message.content)
-                self._print(response)
-                new_message["content"] = response
-
-            self.history.append(new_message)
-
-            # print history if in verbose mode
-            if self.verbose: self._show_history()
-            else: print()
-
             q = input("> ")
             if self._is_command_quit(q): return Bot.EXIT_NORMAL
             if self._is_command_restart(q): return Bot.EXIT_RESTART
             context = self._preprocessing(q)
-            self.history.append({"role": "user", "content": context})
+            self.model.append_message(messages, "user", context)
+            
+            new_message = {"role": "assistant", "content": ""}
+            completion = self.model.create_chat_completion(messages, self.stream)
+            if self.stream:
+                for chunk in completion:
+                    s = self.model.chat_completion_chunk_content(chunk)
+                    if s:
+                        print(self._format(s), end="", flush=True)
+                        new_message["content"] += s # type: ignore
+                print()
+            else:
+                response = self._postprocessing(self.model.chat_completion_content(completion))
+                self._print(response)
+                new_message["content"] = response
+
+            messages.append(new_message)
+
+            # print history if in verbose mode
+            if self.verbose: self._show_messages(messages)
+            else: print()
