@@ -1,0 +1,10 @@
+[project]
+name = "garfield"
+version = "0.1.0"
+description = "Simple dialog system framework"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "simpleeval",
+    "termcolor",
+]
