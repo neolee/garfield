@@ -1,16 +1,11 @@
 import re
-from txtai import Embeddings
 
-from garfield.bots.llm import LLMBot
+from bots.llm import LLMBot
 
 
 class CoTBot(LLMBot):
     def __init__(self, runtype="custom", stream=False, verbose=False):
         super().__init__(runtype, stream, verbose)
-
-        # init the embedding wikipedia vector data
-        self.embeddings = Embeddings()
-        self.embeddings.load(provider="huggingface-hub", container="neuml/txtai-wikipedia")
 
         # the chain-of-thought prompt courtesy of
         # https://github.com/codelion/optillm/blob/main/cot_reflection.py
@@ -47,17 +42,3 @@ class CoTBot(LLMBot):
             match = re.search(r"<output>(.*?)(?:</output>|$)", content, re.DOTALL)
             return match.group(1).strip() if match else content
         else: return ""
-
-    def _preprocessing(self, q):
-        if not self.embeddings: return q
-
-        context = "\n".join([x["text"] for x in self.embeddings.search(q)]) # type: ignore
-        prompt = f"""
-        Answer the following question using only the context below. Only include information
-        specifically discussed.
-
-        question: {q}
-        context: {context}
-        """
-
-        return prompt

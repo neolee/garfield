@@ -10,11 +10,12 @@ class SimpleLLMBot(Bot):
         super().__init__(runtype)
         self.q = "I'm now backed by the newest LLM. Let's talk."
         self.model = m.default
+        self.system_message = system_message
 
     def _think(self, s):
         completion = self.model.create_chat_completion(
             messages=[
-                {"role": "system", "content": system_message},
+                {"role": "system", "content": self.system_message},
                 {"role": "user", "content": s}
             ]
         )
@@ -36,6 +37,7 @@ class LLMBot(Bot):
         self.model = m.default
         self.stream = stream
         self.verbose = verbose
+        self.system_message = system_message
 
     def _show_messages(self, messages):
         self._print(stringify_messages(messages), 'light_grey')
@@ -52,7 +54,7 @@ class LLMBot(Bot):
         self._print(self.q)
         
         messages = [
-            {"role": "system", "content": system_message}
+            {"role": "system", "content": self.system_message}
         ]
 
         while True:
