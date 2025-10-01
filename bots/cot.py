@@ -1,6 +1,6 @@
 import re
 
-from bots.llm import LLMBot
+from .llm import LLMBot
 
 
 class CoTBot(LLMBot):
@@ -37,6 +37,8 @@ class CoTBot(LLMBot):
         """
 
     def _postprocessing(self, content):
+        content = super()._postprocessing(content)
+
         # extract and return `output` part
         if content:
             match = re.search(r"<output>(.*?)(?:</output>|$)", content, re.DOTALL)
