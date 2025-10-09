@@ -9,13 +9,9 @@ class Garfield:
     def add(self, bot):
         self.bots.append(bot)
 
-    @staticmethod
-    def _prompt(s):
-        print(s)
-        print()
-
     def run(self):
-        self._prompt("This is Garfield dialog system. Let's talk.")
+        print("This is Garfield dialog system. Let's talk.")
+        print()
 
         if self.mode == 'list':
             self._run_list_mode()
