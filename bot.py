@@ -8,10 +8,17 @@ class Bot:
 
     wait = 1
 
-    # self.runtype: run type of the bot, can be 'once' or 'looped', default to 'once'
+    # self.runtype: run type of the bot, can be 'once' 'loop' or 'custom', default to 'once'
     def __init__(self, runtype='once'):
         self.runtype = runtype
-        self.q = ''
+        self._q = ''
+
+    @property
+    def q(self):
+        s = self._q
+        if self.runtype == 'loop':
+            s += " (type ':q' ':x' ':quit' ':exit' or 'bye' to quit)"
+        return s
 
     def _think(self, s):
         return s
@@ -40,7 +47,7 @@ class Bot:
         self._say(self._think(q))
         return Bot.EXIT_NORMAL
 
-    def _run_looped(self):
+    def _run_loop(self):
         self._say(self.q)
         while True:
             q = input("> ")
@@ -51,5 +58,5 @@ class Bot:
     def run(self):
         match self.runtype:
             case 'once': return self._run_once()
-            case 'looped': return self._run_looped()
+            case 'loop': return self._run_loop()
             case _: return Bot.EXIT_NORMAL

@@ -6,9 +6,9 @@ system_message = "You are a helpful assistant."
 
 
 class SimpleLLMBot(Bot):
-    def __init__(self, runtype='looped'):
+    def __init__(self, runtype='loop'):
         super().__init__(runtype)
-        self.q = "I'm now backed by the newest LLM. Let's talk."
+        self._q = "I'm now backed by the newest LLM. Let's talk."
         self.model = m.default
         self.system_message = system_message
 
@@ -33,7 +33,7 @@ def stringify_messages(messages):
 class LLMBot(Bot):
     def __init__(self, runtype='custom', stream=True, verbose=False):
         super().__init__(runtype)
-        self.q = "I'm now backed by the newest LLM. Let's talk."
+        self._q = "I'm now backed by the newest LLM. Let's talk."
         self.model = m.default
         self.stream = stream
         self.verbose = verbose

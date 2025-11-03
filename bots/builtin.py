@@ -7,7 +7,7 @@ from bot import Bot
 class HelloBot(Bot):
     def __init__(self, runtype='once'):
         super().__init__(runtype)
-        self.q = "Hi, what is your name?"
+        self._q = "Hi, what is your name?"
 
     def _think(self, s):
         return f"Hello {s}"
@@ -16,7 +16,7 @@ class HelloBot(Bot):
 class GreetingBot(Bot):
     def __init__(self, runtype='once'):
         super().__init__(runtype)
-        self.q = "How are you today?"
+        self._q = "How are you today?"
 
     def _think(self, s):
         if 'good' in s.lower() or 'fine' in s.lower():
@@ -28,7 +28,7 @@ class GreetingBot(Bot):
 class FavoriteColorBot(Bot):
     def __init__(self, runtype='once'):
         super().__init__(runtype)
-        self.q = "What's your favorite color?"
+        self._q = "What's your favorite color?"
 
     def _think(self, s):
         colors = ['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'purple']
@@ -38,8 +38,7 @@ class FavoriteColorBot(Bot):
 class CalcBot(Bot):
     def __init__(self, runtype='once'):
         super().__init__(runtype)
-        self.q = "Through recent upgrade I can do calculation now. Input some arithmetic expression to try, " \
-                 "input ':q' ':x' ':quit' ':exit' or 'bye' to quit:"
+        self._q = "Through recent upgrade I can do calculation now. Input some arithmetic expression to try."
 
     def _think(self, s):
         try:
