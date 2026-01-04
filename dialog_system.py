@@ -33,7 +33,7 @@ class Garfield:
             try:
                 bot_index = int(input(input_prompt))
             except ValueError:
-                print(f"Not a valid number. Please retry.")
+                print("Not a valid number. Please retry.")
                 continue
 
             if bot_index < 1 or bot_index > bot_count:

@@ -11,3 +11,6 @@ dependencies = [
     "simpleeval",
     "termcolor",
 ]
+
+[tool.ruff.lint]
+ignore = ["E402", "E701", "F403", "F405"]
