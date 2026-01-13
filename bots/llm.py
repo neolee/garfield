@@ -71,7 +71,7 @@ class LLMBot(Bot):
                     s = self.model.chat_completion_chunk_content(chunk)
                     if s:
                         print(self._format(s), end="", flush=True)
-                        new_message["content"] += s # type: ignore
+                        new_message["content"] += s
                 print()
             else:
                 response = self._postprocessing(self.model.chat_completion_content(completion))

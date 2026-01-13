@@ -24,10 +24,10 @@ class Bot:
         return s
 
     def _format(self, s, c='blue'):
-        return colored(s, c) # type: ignore
+        return colored(s, c)
 
     def _print(self, s, c='blue'):
-        cprint(s, c) # type: ignore
+        cprint(s, c)
 
     def _say(self, s):
         sleep(Bot.wait)
