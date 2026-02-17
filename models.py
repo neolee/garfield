@@ -11,6 +11,8 @@ qwen_coder = Model("qwen/qwen3-coder-plus", name="Qwen-Coder Plus")
 kimi_k2 = Model("moonshot/kimi-k2-0905-preview", name="Kimi K2")
 kimi_reasoner = Model("moonshot/kimi-2.5", name="Kimi K2.5")
 
+gpt = Model("openai", name="GPT-5.2")
+
 openrouter_gemini_flash = Model("openrouter/google/gemini-3-flash-preview", name="Gemini 3 Flash")
 openrouter_gemini_pro = Model("openrouter/google/gemini-3-pro-preview", name="Gemini 3 Pro")
 
