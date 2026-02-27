@@ -14,4 +14,6 @@ gpt = Model("openai", name="GPT-5.2")
 local = Model("local/qwen3.5-nt", name="Qwen3.5-35B-A3B")
 local_reasoner = Model("local/qwen3.5", name="Qwen3.5-35B-A3B Thinking")
 
+omlx = Model("omlx", name="Qwen3.5-35B-A3B MLX")
+
 default = qwen

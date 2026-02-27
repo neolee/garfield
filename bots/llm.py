@@ -13,18 +13,18 @@ class SimpleLLMBot(Bot):
         self.system_message = system_message
 
     def _think(self, s):
-        completion = self.model.create_chat_completion(
+        message = self.model.request_model_contents(
             messages=[
                 {"role": "system", "content": self.system_message},
                 {"role": "user", "content": s}
             ]
         )
-        return self.model.chat_completion_content(completion)
+        return message["content"]
 
 
 def stringify_messages(messages):
     import json
-    
+
     s = f"\n{'-'*20} History dump {'-'*20}\n"
     s += json.dumps(messages,  ensure_ascii=False, indent=2)
     s += f"\n{'-'*55}"
@@ -52,7 +52,7 @@ class LLMBot(Bot):
 
     def run(self):
         self._print(self.q)
-        
+
         messages = [
             {"role": "system", "content": self.system_message}
         ]
@@ -63,18 +63,20 @@ class LLMBot(Bot):
             if self._is_command_restart(q): return Bot.EXIT_RESTART
             context = self._preprocessing(q)
             self.model.append_message(messages, "user", context)
-            
+
             new_message = {"role": "assistant", "content": ""}
-            completion = self.model.create_chat_completion(messages, self.stream)
+
+            completion = self.model.request_model_contents(messages, stream=self.stream)
             if self.stream:
-                for chunk in completion:
-                    s = self.model.chat_completion_chunk_content(chunk)
-                    if s:
-                        print(self._format(s), end="", flush=True)
-                        new_message["content"] += s
+                content = ""
+                for event in completion:
+                    if event["type"] == "content":
+                        content += event["delta"]
+                        print(self._format(event["delta"]), end="", flush=True)
+                new_message["content"] = self._postprocessing(content)
                 print()
             else:
-                response = self._postprocessing(self.model.chat_completion_content(completion))
+                response = self._postprocessing(completion["content"])
                 self._print(response)
                 new_message["content"] = response
 
