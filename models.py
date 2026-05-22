@@ -11,8 +11,8 @@ kimi_reasoner = Model("moonshot/kimi-2.6", name="Kimi K2.6")
 
 gpt = Model("openai")
 
-local = Model("local/qwen3.6-nt", name="Qwen3.6-35B-A3B")
-local_reasoner = Model("local/qwen3.6", name="Qwen3.6-35B-A3B Thinking")
+local = Model("local/qwen3.6-35b", name="Qwen3.6-35B-A3B")
+local_reasoner = Model("local/qwen3.6-35b-thinking", name="Qwen3.6-35B-A3B Thinking")
 
 omlx = Model("omlx", name="Qwen3.6-35B-A3B MLX")
 
