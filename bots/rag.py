@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Optional
+
 import os
 import httpx
 
@@ -14,7 +14,7 @@ class RAGBot(LLMBot):
         self.search_timeout = 30.0
         self.search_result_limit = 32768
 
-    def _retrieve(self, q: str) -> Optional[str]:
+    def _retrieve(self, q: str) -> str | None:
         if not self.search_api_key:
             self._print("search api key missing, falling back to plain query", "yellow",)
             return None
